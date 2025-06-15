@@ -4,12 +4,12 @@ import ctypes
 import threading
 import time
 
-# Hugging Face Client Setup
+# Hugging Face setup
 HF_TOKEN = "your hf token here"
 MODEL_ID = "HuggingFaceH4/zephyr-7b-beta"
 client = InferenceClient(model=MODEL_ID, token=HF_TOKEN)
 
-# Fetch LLM response
+# calling llm
 def call_llm(client, prompt):
     formatted_prompt = f"<|system|>\nYou are a helpful assistant.\n<|user|>\n{prompt}\n<|assistant|>\n"
     response_text = client.text_generation(
@@ -28,7 +28,7 @@ root.geometry("420x540")
 root.overrideredirect(True)
 root.config(bg="#fcd6e6")
 
-# Rounded window effect (Windows only)
+# Aesthetic window shell (tkinter) setup
 if ctypes.windll.shell32.IsUserAnAdmin():
     hwnd = ctypes.windll.user32.GetParent(root.winfo_id())
     ctypes.windll.dwmapi.DwmSetWindowAttribute(hwnd, 2, ctypes.pointer(ctypes.c_int(1)), 4)
@@ -37,7 +37,7 @@ if ctypes.windll.shell32.IsUserAnAdmin():
 def move_window(event):
     root.geometry(f'+{event.x_root}+{event.y_root}')
 
-# Auto-close on focus out
+# Auto-close on focus out when inactive
 def click_outside(event):
     if not root.winfo_containing(event.x_root, event.y_root):
         root.destroy()
@@ -126,14 +126,14 @@ def send_message():
 
     start_typing_animation()
 
-    # Use threading to avoid freezing UI
+    # Use threading to avoid freezing UI and gitching out
     def get_response():
         response = call_llm(client, user_input)
         root.after(0, lambda: display_bot_response(response))
 
     threading.Thread(target=get_response).start()
 
-# Show bot response
+# Show bot replies to our texts and saving them below the binding
 def display_bot_response(response):
     stop_typing_animation()
     chat_text.config(state="normal")
